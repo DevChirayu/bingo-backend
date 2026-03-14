@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: bingo_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: bingo
+      POSTGRES_PASSWORD: bingo123
+      POSTGRES_DB: bingo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: bingo_redis
+    ports:
+      - "6379:6379"
+
+  adminer:
+    image: adminer
+    container_name: bingo_adminer
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
