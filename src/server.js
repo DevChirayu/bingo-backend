@@ -23,3 +23,6 @@ app.get("/test-db", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   res.json(result.rows);
 });
+
+const roomRoutes = require("./routes/roomRoutes");
+app.use("/rooms", roomRoutes);
