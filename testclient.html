@@ -1,19 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bingo Test</title>
+</head>
+<body>
+
+<h2>Bingo Test Client</h2>
+
+<div>
+  <button onclick="joinGame()">Join Game</button>
+</div>
+
+<h3>Room:</h3>
+<div id="room"></div>
+
+<h3>Numbers Called:</h3>
+<div id="numbers"></div>
+
+<h3>Winner:</h3>
+<div id="winner"></div>
+
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
 <script>
+
 const socket = io("http://localhost:5000");
-const roomId = 1;
-const userId = 1;
 
-socket.emit("join_room", { roomId, userId });
+let userId = Math.floor(Math.random()*1000);
+let currentRoom = null;
 
-socket.on("number_called", (num) => {
-  console.log("Number called:", num);
+function joinGame(){
+  socket.emit("join_game",{ userId });
+}
+
+socket.on("connect",()=>{
+  console.log("Connected:",socket.id);
 });
 
-socket.on("winner_announce", (data) => {
-  console.log("Winner!", data);
+socket.on("room_joined",(data)=>{
+  currentRoom = data.roomId;
+  document.getElementById("room").innerText = data.roomId;
+  console.log("Joined room:",data.roomId);
 });
 
-// Start game
-socket.emit("start_game", { roomId });
+socket.on("number_called",(num)=>{
+  const div = document.getElementById("numbers");
+  div.innerHTML += num + " ";
+  console.log("Number:",num);
+});
+
+socket.on("winner_announce",(data)=>{
+  document.getElementById("winner").innerText =
+    "Winner: "+data.winner;
+
+  console.log("Winner:",data);
+});
+
 </script>
+
+</body>
+</html>
