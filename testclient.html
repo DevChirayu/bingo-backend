@@ -1,0 +1,19 @@
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+const socket = io("http://localhost:5000");
+const roomId = 1;
+const userId = 1;
+
+socket.emit("join_room", { roomId, userId });
+
+socket.on("number_called", (num) => {
+  console.log("Number called:", num);
+});
+
+socket.on("winner_announce", (data) => {
+  console.log("Winner!", data);
+});
+
+// Start game
+socket.emit("start_game", { roomId });
+</script>
