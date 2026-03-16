@@ -21,6 +21,13 @@ app.get("/test-db", async (req, res) => {
   res.json(result.rows);
 });
 
+const { createRoom } = require("./services/roomManager");
+app.get("/create-test-room", async (req, res) => {
+  const playerId = 1; // human player ID
+  const roomId = await createRoom(playerId, 5); // 1 human + 4 bots
+  res.json({ roomId });
+});
+
 // Create HTTP server (needed for Socket.IO)
 const http = require("http");
 const { Server } = require("socket.io");
@@ -76,7 +83,7 @@ io.on("connection", socket => {
 
   const { joinRoom } = require("./services/roomManager");
   socket.on("join_game", async ({ userId }) => {
-    const roomId = await joinRoom(userId);
+    const roomId = await joinRoom(io, userId);
     socket.join(`room:${roomId}`);
     socket.emit("room_joined", { roomId });
   });
